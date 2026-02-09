@@ -1,40 +1,47 @@
-import os
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
+import requests
+from fastapi import HTTPException
 
-load_dotenv()
+OLLAMA_URL = "http://localhost:11434/api/generate"
+MODEL = "mistral"   
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0
-)
+def interpret_labs(labs: dict) -> str:
+    try:
+        units = {
+            "hemoglobin": "g/dL",
+            "vitamin_d": "ng/mL",
+            "fasting_sugar": "mg/dL"
+        }
 
-prompt = PromptTemplate(
-    input_variables=["labs"],
-    template="""
+        formatted_labs = "\n".join(
+            [f"- {k}: {v} {units.get(k, '')}" for k, v in labs.items()]
+        )
+
+        prompt = f"""
 You are a medical lab interpretation assistant.
 Do NOT diagnose.
 Explain results in simple words.
 
 Lab values:
-{labs}
+{formatted_labs}
 
 Give output in this format:
 - Status (Normal/Low/High)
 - Explanation (simple)
 - Health note (non-alarming)
 """
-)
 
-def interpret_labs(labs: dict) -> str:
-    """
-    labs example:
-    {
-        "Hemoglobin": "11 g/dL",
-        "WBC": "12000 /µL"
-    }
-    """
-    formatted_labs = ", ".join([f"{k}: {v}" for k, v in labs.items()])
-    response = llm.invoke(prompt.format(labs=formatted_labs))
-    return response.content
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": MODEL,
+                "prompt": prompt,
+                "stream": False
+            },
+            timeout=60
+        )
+
+        response.raise_for_status()
+        return response.json()["response"]
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
