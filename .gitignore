@@ -1,6 +1,7 @@
-# Virtual environment
+# Virtual environments
 .venv/
 venv/
+backend/venv/
 
 # Python cache
 __pycache__/
@@ -12,5 +13,9 @@ desktop.ini
 # IDE
 .vscode/
 
-#env
+# Environment variables
 .env
+
+# Node / frontend (if you use it)
+node_modules/
+dist/
