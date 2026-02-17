@@ -14,3 +14,11 @@ desktop.ini
 
 #env
 .env
+
+# Database
+*.db
+nutriai.db
+
+# OS
+.DS_Store
+Thumbs.db
