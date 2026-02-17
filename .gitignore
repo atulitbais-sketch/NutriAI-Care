@@ -1,24 +1,55 @@
-# Virtual environment
-.venv/
-venv/
+# <<<<<<< HEAD
+# # Virtual environment
+# .venv/
+# venv/
+# =======
+# # Virtual environments
+# .venv/
+# venv/
+# backend/venv/
+# >>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
 
-# Python cache
+# # Python cache
+# __pycache__/
+# *.pyc
+
+# # OS files
+# desktop.ini
+
+# # IDE
+# .vscode/
+
+
+# # Database
+# *.db
+# nutriai.db
+
+# # OS
+# .DS_Store
+# Thumbs.db
+# =======
+# # Environment variables
+# .env
+
+# # Node / frontend (if you use it)
+# node_modules/
+# dist/
+# >>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
+
+
+# Python
 __pycache__/
 *.pyc
-
-# OS files
-desktop.ini
+*.pyo
+*.pyd
+venv/
+.venv/
 
 # IDE
 .vscode/
 
-#env
+# Environment
 .env
 
 # Database
 *.db
-nutriai.db
-
-# OS
-.DS_Store
-Thumbs.db
