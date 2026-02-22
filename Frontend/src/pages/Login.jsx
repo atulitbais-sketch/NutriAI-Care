@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { loginUser } from "../api/auth"; // 👈 add this
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,11 +18,16 @@ function Login() {
     }
 
     try {
-      console.log(email, password);
+      const data = await loginUser(email, password); // backend call
+      console.log("Login success:", data);
+
+      // save token (important later)
+      localStorage.setItem("token", data.access_token);
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
-      setError("Invalid credentials");
+      setError("Invalid email or password");
     }
   };
 
