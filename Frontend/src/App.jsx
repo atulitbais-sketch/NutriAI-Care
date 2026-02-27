@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Root URL → shows Upload page directly */}
-        <Route path="/" element={<Upload />} />
+        <Route path="/" element={<Dashboard />} />
 
         {/* Other pages */}
         <Route path="/upload" element={<Upload />} />
