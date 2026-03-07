@@ -4,9 +4,7 @@ from fastapi import HTTPException
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
-# ------------------------------
-# Reference Ranges
-# ------------------------------
+
 REFERENCE_RANGES = {
     "male": {
         "hemoglobin": (13.5, 17.5),
@@ -21,9 +19,6 @@ REFERENCE_RANGES = {
 }
 
 
-# ------------------------------
-# Severity Calculation
-# ------------------------------
 def calculate_severity(value, low, high):
 
     if value < low:
@@ -47,9 +42,6 @@ def calculate_severity(value, low, high):
     return "Normal"
 
 
-# ------------------------------
-# Risk Score
-# ------------------------------
 def calculate_risk_score(results):
 
     score = 0
@@ -71,9 +63,6 @@ def calculate_risk_score(results):
         return "High Risk"
 
 
-# ------------------------------
-# Nutrition Engine
-# ------------------------------
 def nutrition_recommendation(lab, status):
 
     recommendations = {
@@ -91,9 +80,6 @@ def nutrition_recommendation(lab, status):
     return recommendations.get(lab, {}).get(status, "Maintain a balanced diet.")
 
 
-# ------------------------------
-# Main Function
-# ------------------------------
 def interpret_labs(labs: dict) -> str:
 
     try:
@@ -108,7 +94,6 @@ def interpret_labs(labs: dict) -> str:
             if lab in ["age", "gender"]:
                 continue
 
-            # Select correct range
             if lab in REFERENCE_RANGES.get(gender, {}):
                 low, high = REFERENCE_RANGES[gender][lab]
             else:
@@ -140,11 +125,9 @@ def interpret_labs(labs: dict) -> str:
 
         risk = calculate_risk_score(results)
 
-        # Structured summary for LLM
         summary_lines = []
 
         for r in results:
-
             summary_lines.append(
                 f"{r['lab']} = {r['value']} → {r['status']} ({r['severity']})"
             )
@@ -186,14 +169,10 @@ Lifestyle Advice:
             raise HTTPException(status_code=500, detail=response.text)
 
         data = response.json()
-        return data.get("response", "").strip()
-=======
-            timeout=60
-        )
 
-        response.raise_for_status()
-        return response.json()["response"]
->>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
+        return data.get("response", "").strip()
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+print("file running successfully")
