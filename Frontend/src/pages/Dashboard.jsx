@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { 
   Activity, 
   Droplet, 
@@ -9,33 +10,47 @@ import {
 import './Dashboard.css';
 
 function Dashboard() {
-  const patient = {
-    name: "John Doe",
-    age: 35,
-    gender: "Male",
-  };
+  const [patient, setPatient] = useState({});
+  const [labs, setLabs] = useState([]);
+  const [warnings, setWarnings] = useState([]);
+  const userId = 1; // later take from login token
 
-  const labs = [
-    { label: "Hemoglobin", value: "10.5 g/dL", status: "low", icon: Droplet },
-    { label: "Blood Sugar", value: "160 mg/dL", status: "high", icon: Heart },
-    { label: "Cholesterol", value: "220 mg/dL", status: "high", icon: Activity },
-  ];
+  useEffect(() => {
+   fetch(`http://127.0.0.1:8000/api/labs/user/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          const report = data[0];
 
-  const warnings = [
-    "Possible Anemia – consider iron supplementation",
-    "Elevated Diabetes Risk – monitor HbA1c",
-  ];
+          setPatient({
+            age: report.age,
+            gender: report.gender,
+            name: "User " + report.user_id
+          });
+
+          setLabs([
+            { label: "Hemoglobin", value: report.hemoglobin + " g/dL", status: report.hemoglobin < 12 ? "low" : "normal", icon: Droplet },
+            { label: "Vitamin D", value: report.vitamin_d + " ng/mL", status: report.vitamin_d < 20 ? "low" : "normal", icon: Activity },
+            { label: "Fasting Sugar", value: report.fasting_sugar + " mg/dL", status: report.fasting_sugar > 140 ? "high" : "normal", icon: Heart },
+          ]);
+
+          setWarnings([report.ai_explanation]);
+        }
+      })
+      .catch(err => console.error("API error:", err));
+  }, []);
 
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1 className="dashboard-title">Medi-Flow AI Dashboard</h1>
+        <h1 className="dashboard-title">NutriAI-Care Dashboard</h1>
         <p className="dashboard-subtitle">
           Real-time insights • {new Date().toLocaleDateString()}
         </p>
       </header>
 
       <div className="card-grid">
+
         {/* Patient Profile */}
         <div className="card card-patient">
           <div className="card-header">
@@ -51,7 +66,7 @@ function Dashboard() {
             </div>
             <div className="info-row">
               <span className="info-label">Age</span>
-              <span className="info-value">{patient.age} years</span>
+              <span className="info-value">{patient.age}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Gender</span>
@@ -122,19 +137,20 @@ function Dashboard() {
               </li>
               <li>
                 <UtensilsCrossed size={18} className="diet-icon amber" />
-                Significantly reduce refined sugars & processed carbs
+                Reduce refined sugars
               </li>
               <li>
                 <UtensilsCrossed size={18} className="diet-icon emerald" />
-                Add nuts, seeds, whole grains & fiber-rich vegetables
+                Eat fiber-rich vegetables
               </li>
             </ul>
           </div>
         </div>
+
       </div>
 
       <footer className="dashboard-footer">
-        Medi-Flow AI • Confidential • Updated real-time
+        NutriAI-Care • Confidential • Updated real-time
       </footer>
     </div>
   );

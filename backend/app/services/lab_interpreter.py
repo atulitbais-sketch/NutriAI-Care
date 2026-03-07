@@ -4,9 +4,8 @@ from fastapi import HTTPException
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
-
 # ------------------------------
-# Reference Ranges by Gender
+# Reference Ranges
 # ------------------------------
 REFERENCE_RANGES = {
     "male": {
@@ -49,13 +48,14 @@ def calculate_severity(value, low, high):
 
 
 # ------------------------------
-# Risk Scoring
+# Risk Score
 # ------------------------------
 def calculate_risk_score(results):
 
     score = 0
 
     for r in results:
+
         if r["severity"] == "Mild":
             score += 1
         elif r["severity"] == "Moderate":
@@ -72,7 +72,7 @@ def calculate_risk_score(results):
 
 
 # ------------------------------
-# Nutrition Suggestions
+# Nutrition Engine
 # ------------------------------
 def nutrition_recommendation(lab, status):
 
@@ -81,10 +81,10 @@ def nutrition_recommendation(lab, status):
             "Low": "Increase iron-rich foods like spinach, lentils, red meat."
         },
         "vitamin_d": {
-            "Low": "Increase sunlight exposure and consume fortified dairy or supplements."
+            "Low": "Increase sunlight exposure and consume fortified dairy or supplements.",
         },
         "fasting_sugar": {
-            "High": "Reduce refined sugar, increase fiber intake, and exercise regularly."
+            "High": "Reduce refined sugar, increase fiber intake, exercise regularly.",
         }
     }
 
@@ -92,11 +92,12 @@ def nutrition_recommendation(lab, status):
 
 
 # ------------------------------
-# Main AI Interpreter
+# Main Function
 # ------------------------------
 def interpret_labs(labs: dict) -> str:
 
     try:
+
         age = labs["age"]
         gender = labs["gender"]
 
@@ -107,7 +108,7 @@ def interpret_labs(labs: dict) -> str:
             if lab in ["age", "gender"]:
                 continue
 
-            # Get reference range
+            # Select correct range
             if lab in REFERENCE_RANGES.get(gender, {}):
                 low, high = REFERENCE_RANGES[gender][lab]
             else:
@@ -127,22 +128,25 @@ def interpret_labs(labs: dict) -> str:
 
             nutrition = nutrition_recommendation(lab, status)
 
-            results.append({
-                "lab": lab,
-                "value": value,
-                "status": status,
-                "severity": severity,
-                "nutrition": nutrition
-            })
+            results.append(
+                {
+                    "lab": lab,
+                    "value": value,
+                    "status": status,
+                    "severity": severity,
+                    "nutrition": nutrition
+                }
+            )
 
         risk = calculate_risk_score(results)
 
-        # Summary for AI
+        # Structured summary for LLM
         summary_lines = []
 
         for r in results:
+
             summary_lines.append(
-                f"{r['lab']}: {r['value']} → {r['status']} ({r['severity']})"
+                f"{r['lab']} = {r['value']} → {r['status']} ({r['severity']})"
             )
 
         structured_summary = "\n".join(summary_lines)
@@ -154,7 +158,7 @@ Do NOT diagnose.
 Patient age: {age}
 Gender: {gender}
 
-Clinical evaluation:
+Lab Evaluation:
 {structured_summary}
 
 Overall Risk Level: {risk}
@@ -162,9 +166,10 @@ Overall Risk Level: {risk}
 Explain results in simple language.
 
 Give output in this format:
-- Overall Risk
-- Explanation
-- Lifestyle Advice
+
+Overall Risk:
+Explanation:
+Lifestyle Advice:
 """
 
         response = requests.post(
@@ -181,8 +186,14 @@ Give output in this format:
             raise HTTPException(status_code=500, detail=response.text)
 
         data = response.json()
-
         return data.get("response", "").strip()
+=======
+            timeout=60
+        )
+
+        response.raise_for_status()
+        return response.json()["response"]
+>>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
