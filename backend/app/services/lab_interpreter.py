@@ -1,8 +1,6 @@
 import requests
 from fastapi import HTTPException
 
-<<<<<<< HEAD
-
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
@@ -28,6 +26,7 @@ REFERENCE_RANGES = {
 # Severity Calculation
 # ------------------------------
 def calculate_severity(value, low, high):
+
     if value < low:
         diff = low - value
         if diff < 2:
@@ -53,6 +52,7 @@ def calculate_severity(value, low, high):
 # Risk Scoring
 # ------------------------------
 def calculate_risk_score(results):
+
     score = 0
 
     for r in results:
@@ -72,28 +72,30 @@ def calculate_risk_score(results):
 
 
 # ------------------------------
-# Nutrition Engine
+# Nutrition Suggestions
 # ------------------------------
 def nutrition_recommendation(lab, status):
+
     recommendations = {
         "hemoglobin": {
-            "Low": "Increase iron-rich foods like spinach, lentils, red meat.",
+            "Low": "Increase iron-rich foods like spinach, lentils, red meat."
         },
         "vitamin_d": {
-            "Low": "Increase sunlight exposure and consume fortified dairy or supplements.",
+            "Low": "Increase sunlight exposure and consume fortified dairy or supplements."
         },
         "fasting_sugar": {
-            "High": "Reduce refined sugar, increase fiber intake, exercise regularly.",
+            "High": "Reduce refined sugar, increase fiber intake, and exercise regularly."
         }
     }
 
-    return recommendations.get(lab, {}).get(status, "Maintain balanced diet.")
+    return recommendations.get(lab, {}).get(status, "Maintain a balanced diet.")
 
 
 # ------------------------------
-# Main Function
+# Main AI Interpreter
 # ------------------------------
 def interpret_labs(labs: dict) -> str:
+
     try:
         age = labs["age"]
         gender = labs["gender"]
@@ -101,10 +103,11 @@ def interpret_labs(labs: dict) -> str:
         results = []
 
         for lab, value in labs.items():
+
             if lab in ["age", "gender"]:
                 continue
 
-            # Select correct range
+            # Get reference range
             if lab in REFERENCE_RANGES.get(gender, {}):
                 low, high = REFERENCE_RANGES[gender][lab]
             else:
@@ -121,6 +124,7 @@ def interpret_labs(labs: dict) -> str:
                 status = "Normal"
 
             severity = calculate_severity(value, low, high)
+
             nutrition = nutrition_recommendation(lab, status)
 
             results.append({
@@ -133,42 +137,22 @@ def interpret_labs(labs: dict) -> str:
 
         risk = calculate_risk_score(results)
 
-        # Structured summary for LLM
+        # Summary for AI
         summary_lines = []
+
         for r in results:
             summary_lines.append(
                 f"{r['lab']}: {r['value']} → {r['status']} ({r['severity']})"
             )
 
         structured_summary = "\n".join(summary_lines)
-=======
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "mistral"   
-
-def interpret_labs(labs: dict) -> str:
-    try:
-        units = {
-            "hemoglobin": "g/dL",
-            "vitamin_d": "ng/mL",
-            "fasting_sugar": "mg/dL"
-        }
-
-        formatted_labs = "\n".join(
-            [f"- {k}: {v} {units.get(k, '')}" for k, v in labs.items()]
-        )
->>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
 
         prompt = f"""
 You are a medical lab interpretation assistant.
 Do NOT diagnose.
 
-<<<<<<< HEAD
 Patient age: {age}
 Gender: {gender}
-=======
-Lab values:
-{formatted_labs}
->>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
 
 Clinical evaluation:
 {structured_summary}
@@ -176,6 +160,7 @@ Clinical evaluation:
 Overall Risk Level: {risk}
 
 Explain results in simple language.
+
 Give output in this format:
 - Overall Risk
 - Explanation
@@ -189,7 +174,6 @@ Give output in this format:
                 "prompt": prompt,
                 "stream": False
             },
-<<<<<<< HEAD
             timeout=120
         )
 
@@ -197,14 +181,8 @@ Give output in this format:
             raise HTTPException(status_code=500, detail=response.text)
 
         data = response.json()
-        return data.get("response", "").strip()
-=======
-            timeout=60
-        )
 
-        response.raise_for_status()
-        return response.json()["response"]
->>>>>>> 84d3bc4df8a9424f432f24e475ca1ad9b5fbe427
+        return data.get("response", "").strip()
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

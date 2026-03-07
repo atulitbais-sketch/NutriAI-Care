@@ -36,10 +36,26 @@ async def analyze_labs(
         risk_level="Calculated",
         ai_explanation=result
     )
+    
+    @router.get("/history")
+    def get_history(db: Session = Depends(get_db)):
+        reports = db.query(LabReport).all()
+
+        return reports
 
     db.add(report)
     db.commit()
     db.refresh(report)
+    
+    @router.get("/{report_id}")
+    def get_report(report_id: int, db: Session = Depends(get_db)):
+        report = db.query(LabReport).filter(
+            LabReport.id == report_id
+            ).first()
+        
+        if not report:
+            return {"error": "Report not found"}
+        return report
 
     return {
         "report_id": report.id,

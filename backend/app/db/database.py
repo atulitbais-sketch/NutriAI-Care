@@ -3,7 +3,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -11,7 +10,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL is not set in .env file")
 
-# Special config only for SQLite
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
         DATABASE_URL,

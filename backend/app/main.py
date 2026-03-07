@@ -7,7 +7,6 @@ from app.models.user_model import Base
 
 app = FastAPI()
 
-# ✅ CORS first
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # React dev server
@@ -16,10 +15,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ then routers
+# then routers
 app.include_router(auth_router, prefix="/api")
 
-# ✅ create tables
+#   create tables
 Base.metadata.create_all(bind=engine)
 
 @app.get("/")
