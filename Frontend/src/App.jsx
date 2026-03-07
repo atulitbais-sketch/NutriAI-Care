@@ -1,24 +1,30 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
-import Upload from "./pages/Upload";         
+import Upload from "./pages/Upload";
+import LabInput from "./pages/LabInput";   
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Root URL → shows Upload page directly */}
-        <Route path="/" element={<Login />} />
 
-        {/* Other pages */}
-        <Route path="/upload" element={<Upload />} />
+        {/* Login page */}
+        <Route path="/" element={<LabInput />} />
+
+        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Optional: catch-all route for 404 (you can add later) */}
-        {/* <Route path="*" element={<NotFound />} /> */}
+        {/* Main pages */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/upload" element={<Upload />} />
+
+        {/* Lab report input page */}
+        <Route path="/lab-input" element={<LabInput />} />
+
       </Routes>
     </BrowserRouter>
   );
