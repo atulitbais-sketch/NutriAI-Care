@@ -1,19 +1,21 @@
-export async function loginUser(email, password) {
-  const res = await fetch("http://127.0.0.1:8000/api/auth/login", {
+const API_URL = "http://127.0.0.1:8000";
+
+export const loginUser = async (email, password) => {
+
+  const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      accept: "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      email,
+      password
+    })
   });
 
-  const data = await res.json().catch(() => ({}));
-
   if (!res.ok) {
-    console.log("Login error:", data); // helps debugging
-    throw new Error(data.detail || "Login failed");
+    throw new Error("Login failed");
   }
 
-  return data; // contains access_token
-}
+  return res.json();
+};

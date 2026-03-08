@@ -1,66 +1,76 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
-import { loginUser } from "../api/auth"; // 👈 add this
 
 function Login() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
+
     e.preventDefault();
 
-    if (!email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
-
     try {
-      const data = await loginUser(email, password); // backend call
-      console.log("Login success:", data);
 
-      // save token (important later)
+      const res = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+
       localStorage.setItem("token", data.access_token);
 
       navigate("/dashboard");
-    } catch (err) {
-      console.log(err);
-      setError("Invalid email or password");
+
+    } catch (error) {
+
+      console.error(error);
+
     }
+
   };
 
   return (
-    <div className="login-container">
-      <form className="login-card" onSubmit={handleLogin}>
-        <h2>Medi-Flow</h2>
-        <p className="subtitle">Login to your account</p>
 
-        {error && <p className="error">{error}</p>}
+    <div>
+
+      <h2>Login</h2>
+
+      <form onSubmit={handleLogin}>
 
         <input
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e)=>setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e)=>setPassword(e.target.value)}
         />
 
         <button type="submit">Login</button>
 
-        <p className="register-text">
-          Don’t have an account? <a href="/register">Register</a>
-        </p>
       </form>
+
     </div>
+
   );
+
 }
 
 export default Login;

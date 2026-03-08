@@ -53,3 +53,8 @@ venv/
 
 # Database
 *.db
+
+/node_modules
+
+/backend/node_modules
+
