@@ -1,78 +1,66 @@
-.login-container {
+/* This is the master reset to make sure the background fills the screen */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.login-page-wrapper {
   width: 100vw;
   height: 100vh;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: linear-gradient(135deg, #4f46e5, #22c55e);
+  background: linear-gradient(135deg, #667eea, #764ba2, #22c55e);
+  background-size: 300% 300%;
+  animation: gradientBG 8s ease infinite;
+  position: fixed; /* This forces it to the front */
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
 
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-.login-card {
+.login-box {
   background: white;
   padding: 40px;
-  width: 320px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  width: 350px;
   text-align: center;
+  z-index: 10000;
 }
 
-.login-card h2 {
-  margin-bottom: 5px;
+.login-box h2 {
   color: #4f46e5;
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #666;
   margin-bottom: 20px;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.login-card input {
+.login-box input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 14px;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
-.login-card input:focus {
-  border-color: #4f46e5;
-}
-
-.login-card button {
+.login-box button {
   width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
+  padding: 12px;
   background: #4f46e5;
   color: white;
-  font-weight: bold;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.login-card button:hover {
-  background: #3730a3;
-}
-
-.error {
-  color: red;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-.register-text {
-  margin-top: 15px;
-  font-size: 13px;
-}
-
-.register-text a {
-  color: #4f46e5;
-  text-decoration: none;
   font-weight: bold;
+  margin-top: 10px;
 }
