@@ -1,73 +1,131 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./Register.css";
 
 function Register() {
+  const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   const handleRegister = async (e) => {
-
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!formData.name || !formData.email || !formData.password) {
+      setError("Please fill all fields.");
+      return;
+    }
 
     try {
+      setLoading(true);
 
-      const res = await fetch("http://127.0.0.1:8000/auth/signup", {
+      const res = await fetch("http://127.0.0.1:8000/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password
-        })
+        body: JSON.stringify(formData)
       });
 
       const data = await res.json();
 
-      alert(data.message);
+      if (!res.ok) {
+        setError(data.detail || "Registration failed.");
+        setLoading(false);
+        return;
+      }
 
+      setSuccess("Account created successfully. Redirecting to login...");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1200);
     } catch (error) {
-      console.error(error);
+  console.error(error);
+  setError("Server error. Please try again.");
+} finally {
+      setLoading(false);
     }
-
   };
 
   return (
+    <div className="register-page">
+      <div className="register-card">
+        <div className="register-left">
+          <h1>NutriAI Care</h1>
+          <p>
+            Create your account to track lab reports, health insights, and AI-based recommendations.
+          </p>
+        </div>
 
-    <div>
+        <div className="register-right">
+          <h2>Create Account</h2>
+          <p className="subtitle">Sign up to get started</p>
 
-      <h2>Register</h2>
+          <form onSubmit={handleRegister} className="register-form">
+            <div className="input-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            </div>
 
-      <form onSubmit={handleRegister}>
+            <div className="input-group">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
 
-        <input
-          placeholder="Name"
-          value={name}
-          onChange={(e)=>setName(e.target.value)}
-        />
+            <div className="input-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)}
-        />
+            {error && <p className="message error">{error}</p>}
+            {success && <p className="message success">{success}</p>}
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
-        />
+            <button type="submit" className="register-btn" disabled={loading}>
+              {loading ? "Creating Account..." : "Register"}
+            </button>
+          </form>
 
-        <button type="submit">Register</button>
-
-      </form>
-
+          <p className="bottom-text">
+            Already have an account? <Link to="/">Login</Link>
+          </p>
+        </div>
+      </div>
     </div>
-
   );
 }
 

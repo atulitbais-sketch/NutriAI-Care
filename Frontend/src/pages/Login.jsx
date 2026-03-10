@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // This is the "GPS" to move pages
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Initialize the navigator
+  const navigate = useNavigate();
 
   const containerStyle = {
     width: "100vw",
@@ -54,48 +54,74 @@ function Login() {
     fontSize: "18px"
   };
 
-  // This is the function that runs when you click the button
-  const handleLogin = (e) => {
-    e.preventDefault(); // Prevents the page from refreshing
-    
-    // For now, we simulate a successful login
-    console.log("Logging in with:", email, password);
-    
-    // This takes you to the /dashboard route
-    navigate("/dashboard"); 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.detail || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("token", data.access_token);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Server error. Please try again.");
+    }
   };
 
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
-        <h2 style={{color: "#4f46e5", margin: "0 0 10px 0"}}>Login</h2>
-        <p style={{color: "#666", marginBottom: "20px"}}>Welcome back!</p>
-        
-        {/* Added handleLogin to the form's onSubmit */}
+        <h2 style={{ color: "#4f46e5", margin: "0 0 10px 0" }}>Login</h2>
+        <p style={{ color: "#666", marginBottom: "20px" }}>Welcome back!</p>
+
         <form onSubmit={handleLogin}>
-          <input 
-            type="email" 
-            placeholder="Email" 
+          <input
+            type="email"
+            placeholder="Email"
             style={inputStyle}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <input 
-            type="password" 
-            placeholder="Password" 
+
+          <input
+            type="password"
+            placeholder="Password"
             style={inputStyle}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
           <button type="submit" style={buttonStyle}>
             Login
           </button>
         </form>
 
-        <p style={{marginTop: "20px", fontSize: "14px", color: "#555"}}>
-          Don't have an account? <a href="/register" style={{color: "#4f46e5", textDecoration: "none", fontWeight: "bold"}}>Sign Up</a>
+        <p style={{ marginTop: "20px", fontSize: "14px", color: "#555" }}>
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            style={{ color: "#4f46e5", textDecoration: "none", fontWeight: "bold" }}
+          >
+            Register
+          </Link>
         </p>
       </div>
     </div>
