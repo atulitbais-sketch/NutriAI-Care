@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -77,6 +78,10 @@ function Login() {
       }
 
       localStorage.setItem("token", data.access_token);
+
+      const decoded = jwtDecode(data.access_token);
+      localStorage.setItem("user_id", decoded.sub);
+
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);

@@ -8,24 +8,40 @@ function Dashboard() {
   const [latestReport, setLatestReport] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/labs/user/1")
-      .then((res) => res.json())
-      .then((data) => {
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("user_id");
+
+  if (!token || !userId) {
+    navigate("/");
+    return;
+  }
+
+  fetch(`http://127.0.0.1:8000/api/labs/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
         setReports(data);
         if (data.length > 0) {
           setLatestReport(data[data.length - 1]);
         }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching reports:", error);
-        setLoading(false);
-      });
-  }, []);
-
+      } else {
+        console.error("Unexpected response:", data);
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching reports:", error);
+      setLoading(false);
+    });
+}, [navigate]);
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
     navigate("/");
   };
 

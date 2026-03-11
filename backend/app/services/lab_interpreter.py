@@ -165,8 +165,8 @@ Overall Risk Level: {risk}
 Give output exactly in this format:
 
 Overall Risk:
-Explanation:
 Lifestyle Advice:
+Explanation:
 """
 
     try:
