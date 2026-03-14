@@ -63,91 +63,16 @@ function Dashboard() {
     return warnings;
   };
 
-  const getDietRecommendations = (report) => {
-    if (!report) return [];
-
-    const recommendations = [];
-
-    if (report.hemoglobin < 12) {
-      recommendations.push("Add iron-rich foods like spinach, lentils, and dates");
-    }
-
-    if (report.vitamin_d < 20) {
-      recommendations.push("Increase sunlight exposure and vitamin D-rich foods");
-    }
-
-    if (report.fasting_sugar > 125) {
-      recommendations.push("Reduce sugar intake and eat more fiber-rich foods");
-    }
-
-    if (recommendations.length === 0) {
-      recommendations.push("Maintain a balanced diet and hydration");
-    }
-
-    return recommendations;
-  };
-
   const getWellnessScore = (report) => {
     if (!report) return 0;
 
     let score = 100;
+
     if (report.hemoglobin < 12) score -= 15;
     if (report.vitamin_d < 20) score -= 20;
     if (report.fasting_sugar > 125) score -= 20;
 
     return Math.max(score, 40);
-  };
-
-  const getStructuredAIOutput = (report) => {
-    if (!report) {
-      return {
-        riskLevel: "Unknown",
-        explanation: "No report available.",
-        dietAdvice: [],
-        nextSteps: []
-      };
-    }
-
-    const explanationPoints = [];
-    const dietAdvice = [];
-    const nextSteps = [];
-
-    if (report.hemoglobin < 12) {
-      explanationPoints.push(
-        `Hemoglobin is low at ${report.hemoglobin} g/dL, which may indicate anemia or iron deficiency.`
-      );
-      dietAdvice.push("Eat iron-rich foods such as spinach, beetroot, lentils, dates, and jaggery.");
-      nextSteps.push("Monitor hemoglobin in the next test and consider consulting a doctor if symptoms persist.");
-    }
-
-    if (report.vitamin_d < 20) {
-      explanationPoints.push(
-        `Vitamin D is low at ${report.vitamin_d} ng/mL, suggesting possible vitamin D deficiency.`
-      );
-      dietAdvice.push("Include milk, eggs, mushrooms, and safe sunlight exposure in your routine.");
-      nextSteps.push("Recheck vitamin D after dietary improvement or supplements if advised by a doctor.");
-    }
-
-    if (report.fasting_sugar > 125) {
-      explanationPoints.push(
-        `Fasting sugar is high at ${report.fasting_sugar} mg/dL, which may indicate poor blood sugar control.`
-      );
-      dietAdvice.push("Avoid excess sugar, soft drinks, and refined carbs. Prefer oats, salads, and whole grains.");
-      nextSteps.push("Track sugar regularly and discuss the reading with a healthcare professional.");
-    }
-
-    if (explanationPoints.length === 0) {
-      explanationPoints.push("Your key lab values are currently within a safer range.");
-      dietAdvice.push("Continue a balanced diet with good hydration, fruits, vegetables, and protein.");
-      nextSteps.push("Maintain healthy habits and continue routine checkups.");
-    }
-
-    return {
-      riskLevel: report.risk_level || "Unknown",
-      explanation: report.ai_explanation || explanationPoints.join(" "),
-      dietAdvice,
-      nextSteps
-    };
   };
 
   const getTrend = (current, previous) => {
@@ -174,6 +99,150 @@ function Dashboard() {
       }
     }
     return `Report ${index + 1}`;
+  };
+
+  const getStructuredAIOutput = (report, previousReport) => {
+    if (!report) {
+      return {
+        riskLevel: "Unknown",
+        explanation: "No report available.",
+        dietAdvice: [],
+        nextSteps: []
+      };
+    }
+
+    const explanationPoints = [];
+    const dietAdvice = [];
+    const nextSteps = [];
+
+    const hasLowHemoglobin = report.hemoglobin < 12;
+    const hasLowVitaminD = report.vitamin_d < 20;
+    const hasHighSugar = report.fasting_sugar > 125;
+
+    const hemoglobinTrend = previousReport
+      ? getTrend(report.hemoglobin, previousReport.hemoglobin)
+      : { label: "No previous data" };
+
+    const vitaminDTrend = previousReport
+      ? getTrend(report.vitamin_d, previousReport.vitamin_d)
+      : { label: "No previous data" };
+
+    const sugarTrend = previousReport
+      ? getTrend(report.fasting_sugar, previousReport.fasting_sugar)
+      : { label: "No previous data" };
+
+    if (hasLowHemoglobin) {
+      explanationPoints.push(
+        `Hemoglobin is low at ${report.hemoglobin} g/dL, which may suggest anemia or low iron levels.`
+      );
+
+      if (hemoglobinTrend.label === "Decreased") {
+        explanationPoints.push(
+          "Compared to the previous report, hemoglobin has decreased, so extra attention is needed."
+        );
+      } else if (hemoglobinTrend.label === "Increased") {
+        explanationPoints.push(
+          "Compared to the previous report, hemoglobin has improved, which is a positive sign."
+        );
+      }
+
+      dietAdvice.push(
+        "Eat iron-rich foods such as spinach, lentils, beans, chickpeas, pumpkin seeds, and beetroot."
+      );
+      dietAdvice.push(
+        "Pair iron-rich foods with vitamin C sources like lemon, orange, or amla to improve absorption."
+      );
+
+      nextSteps.push(
+        "Monitor hemoglobin in the next test and consider consulting a doctor if fatigue, weakness, or dizziness continue."
+      );
+    }
+
+    if (hasLowVitaminD) {
+      explanationPoints.push(
+        `Vitamin D is low at ${report.vitamin_d} ng/mL, suggesting possible vitamin D deficiency.`
+      );
+
+      if (vitaminDTrend.label === "Decreased") {
+        explanationPoints.push(
+          "Vitamin D has decreased compared to the previous report."
+        );
+      } else if (vitaminDTrend.label === "Increased") {
+        explanationPoints.push(
+          "Vitamin D has improved compared to the previous report."
+        );
+      }
+
+      dietAdvice.push(
+        "Include milk, eggs, mushrooms, fortified foods, and safe morning sunlight exposure in your routine."
+      );
+
+      nextSteps.push(
+        "Recheck vitamin D after dietary improvement and sunlight exposure, or after supplements if prescribed."
+      );
+    }
+
+    if (hasHighSugar) {
+      explanationPoints.push(
+        `Fasting sugar is high at ${report.fasting_sugar} mg/dL, which may indicate poor blood sugar control.`
+      );
+
+      if (sugarTrend.label === "Increased") {
+        explanationPoints.push(
+          "Fasting sugar has increased compared to the previous report, showing a worsening trend."
+        );
+      } else if (sugarTrend.label === "Decreased") {
+        explanationPoints.push(
+          "Fasting sugar has decreased compared to the previous report, which is a good sign."
+        );
+      }
+
+      dietAdvice.push(
+        "Avoid excess sugar, sweet drinks, bakery items, and refined carbs. Prefer oats, vegetables, pulses, salads, and whole grains."
+      );
+      dietAdvice.push(
+        "Choose balanced meals with more fiber and protein to help manage blood sugar."
+      );
+
+      nextSteps.push(
+        "Track sugar regularly and discuss these readings with a healthcare professional."
+      );
+    }
+
+    if (hasLowHemoglobin && hasHighSugar) {
+      explanationPoints.push(
+        "Because hemoglobin is low and fasting sugar is high together, diet should improve iron intake without adding too much sugar."
+      );
+
+      dietAdvice.push(
+        "Prefer iron-rich but diabetes-friendly foods like spinach, lentils, tofu, roasted chana, beans, and seeds instead of sugary iron sources."
+      );
+    }
+
+    if (!hasLowHemoglobin && !hasLowVitaminD && !hasHighSugar) {
+      explanationPoints.push(
+        "Your key lab values are currently within a safer range based on this report."
+      );
+
+      dietAdvice.push(
+        "Continue a balanced diet with fruits, vegetables, protein, whole grains, and proper hydration."
+      );
+
+      nextSteps.push(
+        "Maintain healthy habits and continue routine checkups to track long-term wellness."
+      );
+    }
+
+    nextSteps.push(
+      "These suggestions are supportive wellness recommendations and not a medical diagnosis."
+    );
+
+    return {
+      riskLevel: report.risk_level || "Unknown",
+      explanation: report.ai_explanation || explanationPoints.join(" "),
+      dietAdvice: [...new Set(dietAdvice)],
+      nextSteps: [...new Set(nextSteps)]
+    };
   };
 
   if (loading) {
@@ -213,12 +282,11 @@ function Dashboard() {
     );
   }
 
-  const warnings = getWarnings(latestReport);
-  const dietRecommendations = getDietRecommendations(latestReport);
-  const wellnessScore = getWellnessScore(latestReport);
-  const structuredAI = getStructuredAIOutput(latestReport);
-
   const previousReport = reports.length > 1 ? reports[reports.length - 2] : null;
+
+  const warnings = getWarnings(latestReport);
+  const wellnessScore = getWellnessScore(latestReport);
+  const structuredAI = getStructuredAIOutput(latestReport, previousReport);
 
   const hemoglobinTrend = getTrend(
     latestReport.hemoglobin,
@@ -385,23 +453,6 @@ function Dashboard() {
 
         <div className="card">
           <div className="card-header">
-            <div className="card-icon-wrapper green">🥗</div>
-            <h2>Diet Recommendation</h2>
-          </div>
-          <div className="card-content">
-            <ul className="diet-list">
-              {dietRecommendations.map((item, index) => (
-                <li key={index}>
-                  <span className="diet-icon green">✔</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
             <div className="card-icon-wrapper blue">💙</div>
             <h2>Overall Wellness</h2>
           </div>
@@ -419,7 +470,7 @@ function Dashboard() {
       <div className="card ai-card">
         <div className="card-header">
           <div className="card-icon-wrapper amber">🤖</div>
-          <h2>AI Health Interpretation</h2>
+          <h2>AI Health & Diet Insights</h2>
         </div>
 
         <div className="card-content">
