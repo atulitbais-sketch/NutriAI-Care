@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://nutriai-care.onrender.com";
 
 export const getUserLabs = async (userId) => {
   const res = await fetch(`${API_URL}/api/labs/user/${userId}`);

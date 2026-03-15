@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://nutriai-care.onrender.com";
 
 export const loginUser = async (email, password) => {
 

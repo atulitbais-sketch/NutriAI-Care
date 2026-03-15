@@ -18,7 +18,7 @@ function Dashboard() {
       return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/labs/user/${userId}`, {
+   fetch(`https://nutriai-care.onrender.com/api/labs/user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
