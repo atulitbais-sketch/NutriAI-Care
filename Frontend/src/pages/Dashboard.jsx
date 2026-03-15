@@ -247,10 +247,12 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1 className="dashboard-title">NutriAI Dashboard</h1>
-          <p className="dashboard-subtitle">Loading reports...</p>
+      <div className="dashboard-shell">
+        <div className="dashboard-container">
+          <div className="dashboard-empty-state">
+            <h1 className="dashboard-title">NutriAI Dashboard</h1>
+            <p className="dashboard-subtitle">Loading reports...</p>
+          </div>
         </div>
       </div>
     );
@@ -258,25 +260,18 @@ function Dashboard() {
 
   if (!latestReport) {
     return (
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1 className="dashboard-title">NutriAI Dashboard</h1>
-          <p className="dashboard-subtitle">No lab reports found yet.</p>
-          <button
-            onClick={() => navigate("/lab-input")}
-            style={{
-              marginTop: "20px",
-              padding: "12px 18px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#2563eb",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "600"
-            }}
-          >
-            Add First Report
-          </button>
+      <div className="dashboard-shell">
+        <div className="dashboard-container">
+          <div className="dashboard-empty-state">
+            <h1 className="dashboard-title">NutriAI Dashboard</h1>
+            <p className="dashboard-subtitle">No lab reports found yet.</p>
+            <button
+              onClick={() => navigate("/lab-input")}
+              className="dashboard-btn primary"
+            >
+              Add First Report
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -311,139 +306,69 @@ function Dashboard() {
   const sugarValues = reports.map((report) => report.fasting_sugar);
 
   return (
-    <div className="dashboard-container">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-          flexWrap: "wrap",
-          gap: "1rem"
-        }}
-      >
-        <div>
-          <h1 className="dashboard-title">NutriAI Dashboard</h1>
-          <p className="dashboard-subtitle">Showing latest saved patient report</p>
-        </div>
-
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <button
-            onClick={() => navigate("/lab-input")}
-            style={{
-              padding: "10px 16px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#2563eb",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "600"
-            }}
-          >
-            Add Lab Report
-          </button>
-
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: "10px 16px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#dc2626",
-              color: "white",
-              cursor: "pointer",
-              fontWeight: "600"
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      <div className="card-grid">
-        <div className="card">
-          <div className="card-header">
-            <div className="card-icon-wrapper blue">👤</div>
-            <h2>Patient Info</h2>
+    <div className="dashboard-shell">
+      <div className="dashboard-container">
+        <div className="dashboard-topbar">
+          <div>
+            <div className="dashboard-badge">Health Analytics Platform</div>
+            <h1 className="dashboard-title">NutriAI Dashboard</h1>
+            <p className="dashboard-subtitle">
+              Monitor patient wellness, lab trends, and AI-powered nutrition insights
+            </p>
           </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="info-label">User ID</span>
-              <span className="info-value">{latestReport.user_id}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Age</span>
-              <span className="info-value">{latestReport.age}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Gender</span>
-              <span className="info-value">{latestReport.gender}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Reports Saved</span>
-              <span className="info-value">{reports.length}</span>
-            </div>
+
+          <div className="dashboard-actions">
+            <button
+              onClick={() => navigate("/lab-input")}
+              className="dashboard-btn primary"
+            >
+              Add Lab Report
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="dashboard-btn secondary danger"
+            >
+              Logout
+            </button>
           </div>
         </div>
 
-        <div className="card card-labs">
-          <div className="card-header">
-            <div className="card-icon-wrapper amber">🧪</div>
-            <h2>Lab Results</h2>
-          </div>
-          <div className="card-content">
-            <div className="lab-list">
-              <div className="lab-item">
-                <div className="lab-left">
-                  <span className="lab-icon">🩸</span>
-                  <span>Hemoglobin</span>
-                </div>
-                <span className={`lab-value ${latestReport.hemoglobin < 12 ? "low" : ""}`}>
-                  {latestReport.hemoglobin} g/dL
-                </span>
+        <div className="hero-grid">
+          <div className="hero-card hero-main">
+            <div className="hero-main-top">
+              <div>
+                <p className="hero-label">Overall Wellness Score</p>
+                <h2 className="hero-score">{wellnessScore}%</h2>
+                <p className="hero-caption">Calculated from the latest report values</p>
               </div>
-
-              <div className="lab-item">
-                <div className="lab-left">
-                  <span className="lab-icon">☀️</span>
-                  <span>Vitamin D</span>
-                </div>
-                <span className={`lab-value ${latestReport.vitamin_d < 20 ? "low" : ""}`}>
-                  {latestReport.vitamin_d} ng/mL
-                </span>
+              <div className="hero-ring">
+                <span>{wellnessScore}</span>
               </div>
+            </div>
 
-              <div className="lab-item">
-                <div className="lab-left">
-                  <span className="lab-icon">🍬</span>
-                  <span>Fasting Sugar</span>
-                </div>
-                <span className={`lab-value ${latestReport.fasting_sugar > 125 ? "high" : ""}`}>
-                  {latestReport.fasting_sugar} mg/dL
-                </span>
+            <div className="hero-stats">
+              <div className="mini-stat">
+                <span className="mini-stat-label">Risk Level</span>
+                <strong>{structuredAI.riskLevel}</strong>
               </div>
-
-              <div className="lab-item">
-                <div className="lab-left">
-                  <span className="lab-icon">📊</span>
-                  <span>Risk Level</span>
-                </div>
-                <span className="lab-value">{latestReport.risk_level}</span>
+              <div className="mini-stat">
+                <span className="mini-stat-label">Reports Saved</span>
+                <strong>{reports.length}</strong>
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-label">Latest Report ID</span>
+                <strong>#{latestReport.id}</strong>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="card">
-          <div className="card-header">
-            <div className="card-icon-wrapper red">⚠️</div>
-            <h2>Warnings</h2>
-          </div>
-          <div className="card-content">
-            <div className="warning-list">
+          <div className="hero-card hero-side">
+            <p className="hero-label">Quick Warnings</p>
+            <div className="warning-list compact">
               {warnings.map((warning, index) => (
                 <div key={index} className="warning-item">
-                  <span className="warning-icon">•</span>
+                  <span className="warning-dot"></span>
                   <span>{warning}</span>
                 </div>
               ))}
@@ -451,164 +376,282 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <div className="card-icon-wrapper blue">💙</div>
-            <h2>Overall Wellness</h2>
-          </div>
-          <div className="card-content">
-            <h2 style={{ margin: 0, color: "#2563eb", fontSize: "2rem" }}>
-              {wellnessScore}%
-            </h2>
-            <p style={{ marginTop: "10px", color: "#64748b" }}>
-              Based on latest saved report
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="card ai-card">
-        <div className="card-header">
-          <div className="card-icon-wrapper amber">🤖</div>
-          <h2>AI Health & Diet Insights</h2>
-        </div>
-
-        <div className="card-content">
-          <div style={{ display: "grid", gap: "20px" }}>
-            <div>
-              <h3 className="section-title">Risk Level</h3>
-              <p className="ai-risk-text">{structuredAI.riskLevel}</p>
+        <div className="card-grid">
+          <div className="card">
+            <div className="card-header">
+              <div className="card-icon-wrapper blue">👤</div>
+              <h2>Patient Info</h2>
             </div>
-
-            <div>
-              <h3 className="section-title">Explanation</h3>
-              <p className="ai-text">{structuredAI.explanation}</p>
-            </div>
-
-            <div>
-              <h3 className="section-title">Diet Advice</h3>
-              <ul className="ai-list">
-                {structuredAI.dietAdvice.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="section-title">Next Steps</h3>
-              <ul className="ai-list">
-                {structuredAI.nextSteps.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="trends-grid">
-        <div className="card trend-card">
-          <div className="card-header">
-            <div className="card-icon-wrapper blue">📈</div>
-            <h2>Hemoglobin Trend</h2>
-          </div>
-          <div className="card-content">
-            <p className="trend-value">{latestReport.hemoglobin} g/dL</p>
-            <span className={`trend-badge ${hemoglobinTrend.direction}`}>
-              {hemoglobinTrend.label}
-            </span>
-            {previousReport && (
-              <p className="trend-subtext">Previous: {previousReport.hemoglobin} g/dL</p>
-            )}
-          </div>
-        </div>
-
-        <div className="card trend-card">
-          <div className="card-header">
-            <div className="card-icon-wrapper amber">☀️</div>
-            <h2>Vitamin D Trend</h2>
-          </div>
-          <div className="card-content">
-            <p className="trend-value">{latestReport.vitamin_d} ng/mL</p>
-            <span className={`trend-badge ${vitaminDTrend.direction}`}>
-              {vitaminDTrend.label}
-            </span>
-            {previousReport && (
-              <p className="trend-subtext">Previous: {previousReport.vitamin_d} ng/mL</p>
-            )}
-          </div>
-        </div>
-
-        <div className="card trend-card">
-          <div className="card-header">
-            <div className="card-icon-wrapper red">🍬</div>
-            <h2>Fasting Sugar Trend</h2>
-          </div>
-          <div className="card-content">
-            <p className="trend-value">{latestReport.fasting_sugar} mg/dL</p>
-            <span className={`trend-badge ${sugarTrend.direction}`}>
-              {sugarTrend.label}
-            </span>
-            {previousReport && (
-              <p className="trend-subtext">Previous: {previousReport.fasting_sugar} mg/dL</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="charts-grid">
-        <HealthTrendChart
-          title="Hemoglobin Chart"
-          labels={chartLabels}
-          values={hemoglobinValues}
-          unit="g/dL"
-        />
-
-        <HealthTrendChart
-          title="Vitamin D Chart"
-          labels={chartLabels}
-          values={vitaminDValues}
-          unit="ng/mL"
-        />
-
-        <HealthTrendChart
-          title="Fasting Sugar Chart"
-          labels={chartLabels}
-          values={sugarValues}
-          unit="mg/dL"
-        />
-      </div>
-
-      <div className="card history-card">
-        <div className="card-header">
-          <div className="card-icon-wrapper blue">🕘</div>
-          <h2>Recent Report History</h2>
-        </div>
-        <div className="card-content">
-          <div className="history-table">
-            <div className="history-head">
-              <span>Date</span>
-              <span>Hemoglobin</span>
-              <span>Vitamin D</span>
-              <span>Sugar</span>
-              <span>Risk</span>
-            </div>
-
-            {recentReports.map((report, index) => (
-              <div className="history-row" key={report.id || index}>
-                <span>{formatReportDate(report, index)}</span>
-                <span>{report.hemoglobin} g/dL</span>
-                <span>{report.vitamin_d} ng/mL</span>
-                <span>{report.fasting_sugar} mg/dL</span>
-                <span>{report.risk_level}</span>
+            <div className="card-content">
+              <div className="info-row">
+                <span className="info-label">User ID</span>
+                <span className="info-value">{latestReport.user_id}</span>
               </div>
-            ))}
+              <div className="info-row">
+                <span className="info-label">Age</span>
+                <span className="info-value">{latestReport.age}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Gender</span>
+                <span className="info-value">{latestReport.gender}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Reports Saved</span>
+                <span className="info-value">{reports.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="card card-labs">
+            <div className="card-header">
+              <div className="card-icon-wrapper amber">🧪</div>
+              <h2>Lab Results</h2>
+            </div>
+            <div className="card-content">
+              <div className="lab-list">
+                <div className="lab-item">
+                  <div className="lab-left">
+                    <span className="lab-icon">🩸</span>
+                    <span>Hemoglobin</span>
+                  </div>
+                  <span className={`lab-value ${latestReport.hemoglobin < 12 ? "low" : "normal"}`}>
+                    {latestReport.hemoglobin} g/dL
+                  </span>
+                </div>
+
+                <div className="lab-item">
+                  <div className="lab-left">
+                    <span className="lab-icon">☀️</span>
+                    <span>Vitamin D</span>
+                  </div>
+                  <span className={`lab-value ${latestReport.vitamin_d < 20 ? "low" : "normal"}`}>
+                    {latestReport.vitamin_d} ng/mL
+                  </span>
+                </div>
+
+                <div className="lab-item">
+                  <div className="lab-left">
+                    <span className="lab-icon">🍬</span>
+                    <span>Fasting Sugar</span>
+                  </div>
+                  <span className={`lab-value ${latestReport.fasting_sugar > 125 ? "high" : "normal"}`}>
+                    {latestReport.fasting_sugar} mg/dL
+                  </span>
+                </div>
+
+                <div className="lab-item">
+                  <div className="lab-left">
+                    <span className="lab-icon">📊</span>
+                    <span>Risk Level</span>
+                  </div>
+                  <span className="lab-value normal">{latestReport.risk_level}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <div className="card-icon-wrapper red">⚠️</div>
+              <h2>Warnings</h2>
+            </div>
+            <div className="card-content">
+              <div className="warning-list">
+                {warnings.map((warning, index) => (
+                  <div key={index} className="warning-item">
+                    <span className="warning-dot"></span>
+                    <span>{warning}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <div className="card-icon-wrapper green">💙</div>
+              <h2>Snapshot</h2>
+            </div>
+            <div className="card-content">
+              <div className="snapshot-stack">
+                <div className="snapshot-item">
+                  <span>Latest Hemoglobin</span>
+                  <strong>{latestReport.hemoglobin} g/dL</strong>
+                </div>
+                <div className="snapshot-item">
+                  <span>Latest Vitamin D</span>
+                  <strong>{latestReport.vitamin_d} ng/mL</strong>
+                </div>
+                <div className="snapshot-item">
+                  <span>Latest Sugar</span>
+                  <strong>{latestReport.fasting_sugar} mg/dL</strong>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="dashboard-footer">
-        Latest report ID: {latestReport.id} | Total saved reports: {reports.length}
+        <div className="card ai-card">
+          <div className="card-header">
+            <div className="card-icon-wrapper amber">🤖</div>
+            <h2>AI Health & Diet Insights</h2>
+          </div>
+
+          <div className="card-content">
+            <div className="ai-grid">
+              <div className="ai-panel">
+                <h3 className="section-title">Risk Level</h3>
+                <p className="ai-risk-text">{structuredAI.riskLevel}</p>
+              </div>
+
+              <div className="ai-panel ai-panel-wide">
+                <h3 className="section-title">Explanation</h3>
+                <p className="ai-text">{structuredAI.explanation}</p>
+              </div>
+
+              <div className="ai-panel">
+                <h3 className="section-title">Diet Advice</h3>
+                <ul className="ai-list">
+                  {structuredAI.dietAdvice.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="ai-panel">
+                <h3 className="section-title">Next Steps</h3>
+                <ul className="ai-list">
+                  {structuredAI.nextSteps.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="section-block">
+          <div className="section-heading-row">
+            <div>
+              <h2 className="section-heading">Metric Trends</h2>
+              <p className="section-subheading">Compare latest readings with the previous saved report</p>
+            </div>
+          </div>
+
+          <div className="trends-grid">
+            <div className="card trend-card">
+              <div className="card-header">
+                <div className="card-icon-wrapper blue">📈</div>
+                <h2>Hemoglobin Trend</h2>
+              </div>
+              <div className="card-content">
+                <p className="trend-value">{latestReport.hemoglobin} g/dL</p>
+                <span className={`trend-badge ${hemoglobinTrend.direction}`}>
+                  {hemoglobinTrend.label}
+                </span>
+                {previousReport && (
+                  <p className="trend-subtext">Previous: {previousReport.hemoglobin} g/dL</p>
+                )}
+              </div>
+            </div>
+
+            <div className="card trend-card">
+              <div className="card-header">
+                <div className="card-icon-wrapper amber">☀️</div>
+                <h2>Vitamin D Trend</h2>
+              </div>
+              <div className="card-content">
+                <p className="trend-value">{latestReport.vitamin_d} ng/mL</p>
+                <span className={`trend-badge ${vitaminDTrend.direction}`}>
+                  {vitaminDTrend.label}
+                </span>
+                {previousReport && (
+                  <p className="trend-subtext">Previous: {previousReport.vitamin_d} ng/mL</p>
+                )}
+              </div>
+            </div>
+
+            <div className="card trend-card">
+              <div className="card-header">
+                <div className="card-icon-wrapper red">🍬</div>
+                <h2>Fasting Sugar Trend</h2>
+              </div>
+              <div className="card-content">
+                <p className="trend-value">{latestReport.fasting_sugar} mg/dL</p>
+                <span className={`trend-badge ${sugarTrend.direction}`}>
+                  {sugarTrend.label}
+                </span>
+                {previousReport && (
+                  <p className="trend-subtext">Previous: {previousReport.fasting_sugar} mg/dL</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="section-block">
+          <div className="section-heading-row">
+            <div>
+              <h2 className="section-heading">Health Charts</h2>
+              <p className="section-subheading">Visual history of saved reports</p>
+            </div>
+          </div>
+
+          <div className="charts-grid">
+            <HealthTrendChart
+              title="Hemoglobin Chart"
+              labels={chartLabels}
+              values={hemoglobinValues}
+              unit="g/dL"
+            />
+
+            <HealthTrendChart
+              title="Vitamin D Chart"
+              labels={chartLabels}
+              values={vitaminDValues}
+              unit="ng/mL"
+            />
+
+            <HealthTrendChart
+              title="Fasting Sugar Chart"
+              labels={chartLabels}
+              values={sugarValues}
+              unit="mg/dL"
+            />
+          </div>
+        </div>
+
+        <div className="card history-card">
+          <div className="card-header">
+            <div className="card-icon-wrapper blue">🕘</div>
+            <h2>Recent Report History</h2>
+          </div>
+          <div className="card-content">
+            <div className="history-table">
+              <div className="history-head">
+                <span>Date</span>
+                <span>Hemoglobin</span>
+                <span>Vitamin D</span>
+                <span>Sugar</span>
+                <span>Risk</span>
+              </div>
+
+              {recentReports.map((report, index) => (
+                <div className="history-row" key={report.id || index}>
+                  <span>{formatReportDate(report, index)}</span>
+                  <span>{report.hemoglobin} g/dL</span>
+                  <span>{report.vitamin_d} ng/mL</span>
+                  <span>{report.fasting_sugar} mg/dL</span>
+                  <span>{report.risk_level}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="dashboard-footer">
+          Latest report ID: {latestReport.id} | Total saved reports: {reports.length}
+        </div>
       </div>
     </div>
   );
