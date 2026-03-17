@@ -1,66 +1,705 @@
-/* This is the master reset to make sure the background fills the screen */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
+
+/* ═══════════════════════════════════════════
+   TOKENS — matches dashboard
+═══════════════════════════════════════════ */
+:root {
+  --cream:        #f7f3ee;
+  --parchment:    #faf7f2;
+  --white:        #ffffff;
+  --stone-1:      #f4f0eb;
+  --stone-2:      #e8e2d8;
+  --stone-3:      #cdc5b8;
+  --stone-4:      #9e9488;
+
+  --forest:       #2d5a3d;
+  --forest-mid:   #3d6b4f;
+  --forest-hi:    #4e7f62;
+  --forest-pale:  #e4ede7;
+  --forest-deep:  #1e3d2a;
+
+  --bark:         #6b4c2a;
+  --bark-pale:    #f0e6d8;
+
+  --ink:          #1a1714;
+  --ink-soft:     #5a5249;
+  --ink-muted:    #9e9488;
+
+  --border:       rgba(160,140,110,0.18);
+  --border-hi:    rgba(61,107,79,0.32);
+
+  --shadow-sm:    0 2px 8px rgba(50,35,15,0.09);
+  --shadow-md:    0 4px 20px rgba(50,35,15,0.11);
+  --shadow-lg:    0 12px 40px rgba(50,35,15,0.16);
+  --shadow-xl:    0 24px 60px rgba(50,35,15,0.22);
+
+  --r-xl:         20px;
+  --r-lg:         12px;
+  --r-md:         8px;
+  --r-sm:         6px;
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+}
+
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════
+   PAGE SHELL
+═══════════════════════════════════════════ */
+.login-shell {
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  position: relative;
   overflow: hidden;
 }
 
-.login-page-wrapper {
-  width: 100vw;
-  height: 100vh;
+/* ═══════════════════════════════════════════
+   LEFT PANEL — Brand / Illustration
+═══════════════════════════════════════════ */
+.login-left {
+  background: var(--forest);
+  position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px 52px;
+  overflow: hidden;
+}
+
+/* layered radial blobs */
+.login-left::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  top: -160px; right: -160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.login-left::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  bottom: -100px; left: -100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(107,76,42,0.25) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* fine grid */
+.ll-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* dot grid ornament */
+.ll-dots {
+  position: absolute;
+  bottom: 120px; right: 48px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.ll-dots span {
+  display: block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* big decorative ring */
+.ll-ring {
+  position: absolute;
+  right: -80px; top: 50%;
+  transform: translateY(-50%);
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+
+.ll-ring::before {
+  content: '';
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.ll-ring::after {
+  content: '';
+  position: absolute;
+  inset: 70px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* brand logo block */
+.ll-logo {
+  position: relative;
+  z-index: 2;
+  display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #667eea, #764ba2, #22c55e);
-  background-size: 300% 300%;
-  animation: gradientBG 8s ease infinite;
-  position: fixed; /* This forces it to the front */
-  top: 0;
-  left: 0;
-  z-index: 9999;
+  gap: 12px;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.ll-logo-mark {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
 }
 
-.login-box {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  width: 350px;
-  text-align: center;
-  z-index: 10000;
+.ll-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -0.01em;
 }
 
-.login-box h2 {
-  color: #4f46e5;
+.ll-logo-sub {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 1px;
+}
+
+/* centre content */
+.ll-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 40px;
+}
+
+.ll-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 3.5vw, 3.6rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   margin-bottom: 20px;
-  font-family: 'Segoe UI', sans-serif;
 }
 
-.login-box input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box;
+.ll-headline em {
+  font-style: italic;
+  color: rgba(255,255,255,0.55);
 }
 
-.login-box button {
+.ll-desc {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 380px;
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+/* feature list */
+.ll-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ll-feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ll-feat-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.ll-feat-icon svg {
+  width: 15px; height: 15px;
+}
+
+.ll-feat-text h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 2px;
+}
+
+.ll-feat-text p {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* bottom quote */
+.ll-footer {
+  position: relative;
+  z-index: 2;
+}
+
+.ll-quote {
+  border-left: 2px solid rgba(255,255,255,0.2);
+  padding-left: 16px;
+}
+
+.ll-quote p {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+}
+
+.ll-quote cite {
+  display: block;
+  margin-top: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════
+   RIGHT PANEL — Form
+═══════════════════════════════════════════ */
+.login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 52px;
+  background: var(--parchment);
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle background blobs */
+.login-right::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61,107,79,0.07), transparent 65%);
+  pointer-events: none;
+}
+
+.login-right::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(107,76,42,0.06), transparent 65%);
+  pointer-events: none;
+}
+
+.login-form-wrap {
   width: 100%;
-  padding: 12px;
-  background: #4f46e5;
-  color: white;
+  max-width: 400px;
+  position: relative;
+  z-index: 2;
+}
+
+/* form header */
+.lf-header {
+  margin-bottom: 36px;
+}
+
+.lf-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: var(--forest-pale);
+  border: 1px solid rgba(45,90,61,0.2);
+  color: var(--forest);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.lf-eyebrow-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--forest-hi);
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.lf-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.lf-title span { color: var(--forest); }
+
+.lf-subtitle {
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* field groups */
+.lf-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.lf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lf-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+}
+
+.lf-input-wrap {
+  position: relative;
+}
+
+.lf-input-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  pointer-events: none;
+  color: var(--stone-4);
+}
+
+.lf-input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  border: 1px solid var(--stone-2);
+  border-radius: var(--r-lg);
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink);
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.lf-input::placeholder { color: var(--stone-3); }
+
+.lf-input:focus {
+  border-color: var(--forest-mid);
+  box-shadow: 0 0 0 3px rgba(45,90,61,0.1), var(--shadow-sm);
+  background: var(--white);
+}
+
+.lf-input:hover:not(:focus) {
+  border-color: var(--stone-3);
+}
+
+/* password toggle */
+.lf-pw-toggle {
+  position: absolute;
+  right: 13px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
+  color: var(--stone-4);
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  transition: color 0.15s;
+}
+
+.lf-pw-toggle:hover { color: var(--ink-soft); }
+
+/* extras row */
+.lf-extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.lf-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.lf-checkbox {
+  width: 16px; height: 16px;
+  accent-color: var(--forest);
+  cursor: pointer;
+}
+
+.lf-remember-label {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  user-select: none;
+}
+
+.lf-forgot {
+  font-size: 0.82rem;
+  color: var(--forest-mid);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.lf-forgot:hover { color: var(--forest); }
+
+/* submit button */
+.lf-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--forest);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-lg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(45,90,61,0.32);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.lf-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.07), transparent);
+  pointer-events: none;
+}
+
+.lf-submit:hover {
+  background: var(--forest-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(45,90,61,0.38);
+}
+
+.lf-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(45,90,61,0.25);
+}
+
+.lf-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.lf-submit-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.lf-submit-arrow {
+  width: 16px; height: 16px;
+  transition: transform 0.2s;
+}
+
+.lf-submit:hover .lf-submit-arrow {
+  transform: translateX(3px);
+}
+
+/* divider */
+.lf-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.lf-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--stone-2);
+}
+
+.lf-divider-text {
+  font-size: 0.72rem;
+  color: var(--stone-4);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* register link */
+.lf-register {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-bottom: 32px;
+}
+
+.lf-register a {
+  color: var(--forest);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(45,90,61,0.3);
+  padding-bottom: 1px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.lf-register a:hover {
+  color: var(--forest-mid);
+  border-color: var(--forest-mid);
+}
+
+/* error message */
+.lf-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: #fdf2f2;
+  border: 1px solid rgba(180,50,50,0.18);
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+  color: #7a2828;
+  line-height: 1.5;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* trust badges */
+.lf-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--stone-2);
+}
+
+.lf-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.lf-trust-item svg {
+  width: 13px; height: 13px;
+  color: var(--forest-hi);
+}
+
+/* loading spinner */
+.lf-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* entrance animation */
+.login-form-wrap {
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-left .ll-logo  { animation: fadeUp 0.45s ease 0.05s both; }
+.login-left .ll-body  { animation: fadeUp 0.5s ease 0.15s both; }
+.login-left .ll-footer { animation: fadeUp 0.5s ease 0.25s both; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .login-shell { grid-template-columns: 1fr; }
+  .login-left  { display: none; }
+  .login-right { padding: 48px 28px; min-height: 100vh; }
+}
+
+@media (max-width: 480px) {
+  .login-right     { padding: 32px 20px; }
+  .lf-title        { font-size: 2rem; }
+  .lf-extras       { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
