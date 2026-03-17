@@ -3,14 +3,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Category
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 
-/*
-  HealthTrendChart
-  Props:
-    title   — string, e.g. "Haemoglobin Chart"
-    labels  — string[], x-axis dates
-    values  — number[], y-axis readings
-    unit    — string, e.g. "g/dL"
-*/
+
 
 const PALETTE = {
   green:       "#2d5a3d",
