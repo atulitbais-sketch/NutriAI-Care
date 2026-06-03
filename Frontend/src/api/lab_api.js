@@ -6,7 +6,7 @@ export const getUserLabs = async (userId) => {
 };
 
 export const createLab = async (labData) => {
-  const res = await fetch(`${API_URL}/api/labs`, {
+  const res = await fetch(`${API_URL}/api/labs/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

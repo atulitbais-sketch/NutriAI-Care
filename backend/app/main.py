@@ -4,8 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.auth_routes import router as auth_router
 from app.routes.lab_routes import router as lab_router
 
-from app.db.database import engine
-from app.db.database import Base
+from app.db.database import engine, Base
 
 app = FastAPI()
 
