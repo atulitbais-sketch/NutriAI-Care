@@ -1,4 +1,4 @@
-const API_URL = "https://nutriai-care.onrender.com";
+const API_URL = "https://nutriai-care-1.onrender.com";
 
 export const loginUser = async (email, password) => {
   const res = await fetch(`${API_URL}/api/auth/login`, {

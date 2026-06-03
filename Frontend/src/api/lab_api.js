@@ -1,4 +1,4 @@
-const API_URL = "https://nutriai-care.onrender.com";
+const API_URL = "https://nutriai-care.onrender-1.com";
 
 const getToken = () => localStorage.getItem("token");
 
