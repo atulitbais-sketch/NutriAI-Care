@@ -8,12 +8,12 @@ from app.db.database import engine, Base
 
 app = FastAPI()
 
-# Allow React frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://nutriai-care-5.onrender.com",
         "http://localhost:5173",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
