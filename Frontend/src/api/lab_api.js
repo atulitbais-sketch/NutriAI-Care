@@ -1,18 +1,38 @@
 const API_URL = "https://nutriai-care.onrender.com";
 
-export const getUserLabs = async (userId) => {
-  const res = await fetch(`${API_URL}/api/labs/user/${userId}`);
-  return res.json();
-};
+const getToken = () => localStorage.getItem("token");
 
-export const createLab = async (labData) => {
+export const analyzeLabs = async (labData) => {
   const res = await fetch(`${API_URL}/api/labs/analyze`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
     },
-    body: JSON.stringify(labData)
+    body: JSON.stringify(labData),
   });
 
-  return res.json();
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.detail || "Analysis failed");
+  }
+
+  return data;
+};
+
+export const getUserLabs = async (userId) => {
+  const res = await fetch(`${API_URL}/api/labs/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.detail || "Failed to fetch reports");
+  }
+
+  return data;
 };
