@@ -128,7 +128,7 @@ function Register() {
 
     try {
       setLoading(true);
-      const res = await fetch("https://nutriai-care.onrender.com/api/auth/signup", {
+      const res = await fetch("https://nutriai-care-1.onrender.com/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
