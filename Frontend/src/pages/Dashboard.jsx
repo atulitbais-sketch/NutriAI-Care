@@ -123,7 +123,7 @@ function Dashboard() {
     const userId = localStorage.getItem("user_id");
     if (!token || !userId) { navigate("/"); return; }
 
-    fetch(`https://nutriai-care.onrender.com/api/labs/user/${userId}`, {
+    fetch(`https://nutriai-care-1.onrender.com/api/labs/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

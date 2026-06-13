@@ -1,4 +1,4 @@
-const API_BASE = "https://nutriai-care.onrender.com/api";
+const API_BASE = "https://nutriai-care-1.onrender.com/api";
 
 export const signup = async (userData) => {
   const response = await fetch(`${API_BASE}/auth/signup`, {

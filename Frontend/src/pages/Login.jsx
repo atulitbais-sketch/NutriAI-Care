@@ -104,19 +104,20 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        const data = await res.json();
         setError(data.detail || "Invalid email or password. Please try again.");
         setLoading(false);
         return;
       }
 
+      const data = await res.json();
       localStorage.setItem("token", data.access_token);
       const decoded = jwtDecode(data.access_token);
       localStorage.setItem("user_id", decoded.sub);
       navigate("/dashboard");
-    } catch {
+    } catch (err) {
+      console.error("Login error:", err);
       setError("Unable to connect to server. Please try again.");
       setLoading(false);
     }
