@@ -123,7 +123,7 @@ function Dashboard() {
     const userId = localStorage.getItem("user_id");
     if (!token || !userId) { navigate("/"); return; }
 
-    fetch(`https://nutriai-care-1.onrender.com/api/labs/user/${userId}`, {
+    fetch(`http://localhost:8000/api/labs/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
@@ -657,8 +657,8 @@ function Sidebar({ active, onNav }) {
         ))}
       </nav>
       <div className="sidebar-bottom">
-        <div className="sidebar-item" title="Settings" onClick={() => navigate("/settings")}><IconSettings /></div>
-        <div className="sidebar-avatar" title="Profile" onClick={() => navigate("/settings")}>U</div>
+      <div className="sidebar-item" title="Settings"><IconSettings /></div>
+        <div className="sidebar-avatar" title="Profile">U</div>
       </div>
     </aside>
   );

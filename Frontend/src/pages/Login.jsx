@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "./Login.css";
-
+import { login } from "../services/Api";
 /* ── SVG Icons ── */
 const IconEmail = () => (
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
@@ -98,29 +98,17 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://nutriai-care-1.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.detail || "Invalid email or password. Please try again.");
-        setLoading(false);
-        return;
-      }
-
-      const data = await res.json();
+      const data = await login({ email, password });
       localStorage.setItem("token", data.access_token);
       const decoded = jwtDecode(data.access_token);
       localStorage.setItem("user_id", decoded.sub);
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError("Unable to connect to server. Please try again.");
+      setError(err.message || "Unable to connect to server. Please try again.");
       setLoading(false);
     }
+
   };
 
   return (

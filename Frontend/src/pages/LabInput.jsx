@@ -114,7 +114,7 @@ function LabInput() {
     }
 
     try {
-      const response = await fetch("https://nutriai-care.onrender.com/api/labs/analyze", {
+      const response = await fetch("http://localhost:8000/api/labs/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

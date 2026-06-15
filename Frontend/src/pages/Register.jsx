@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
-
+import { signup } from "../services/Api";
 /* ── SVG Icons ── */
 const IconUser = () => (
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
@@ -126,25 +126,13 @@ function Register() {
       return;
     }
 
-    try {
+   try {
       setLoading(true);
-      const res = await fetch("https://nutriai-care-1.onrender.com/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.detail || "Registration failed. Please try again.");
-        setLoading(false);
-        return;
-      }
-
+      await signup(formData);
       setSuccess("Account created successfully — redirecting to sign in…");
       setTimeout(() => navigate("/"), 1400);
-    } catch {
-      setError("Server error. Please try again.");
+    } catch (err) {
+      setError(err.message || "Server error. Please try again.");
       setLoading(false);
     }
   };
