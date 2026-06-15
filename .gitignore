@@ -57,4 +57,8 @@ venv/
 /node_modules
 
 /backend/node_modules
-
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env.local
+Frontend/.env.production

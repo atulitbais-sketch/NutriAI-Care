@@ -123,7 +123,8 @@ function Dashboard() {
     const userId = localStorage.getItem("user_id");
     if (!token || !userId) { navigate("/"); return; }
 
-    fetch(`http://localhost:8000/api/labs/user/${userId}`, {
+    const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000/api";
+fetch(`${API_BASE}/labs/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

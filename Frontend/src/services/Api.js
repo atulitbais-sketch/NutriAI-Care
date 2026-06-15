@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000/api";
 
 export const signup = async (userData) => {
   const response = await fetch(`${API_BASE}/auth/signup`, {
@@ -23,9 +23,13 @@ export const login = async (userData) => {
 };
 
 export const analyzeLabs = async (labData) => {
+  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/labs/analyze`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(labData),
   });
   const data = await response.json();

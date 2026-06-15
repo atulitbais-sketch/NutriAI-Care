@@ -114,7 +114,8 @@ function LabInput() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/labs/analyze", {
+     const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000/api";
+const response = await fetch(`${API_BASE}/labs/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
